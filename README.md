@@ -1,87 +1,237 @@
+
 # TP2 — Fundamentos de Inteligência Artificial
 
-Implementação e comparação de algoritmos de otimização para o problema de **sequenciamento de manutenção de ativos**. O trabalho utiliza três instâncias (pequena, média e grande) e compara a qualidade das soluções por meio da função objetivo `h` (quanto menor, melhor).
+Trabalho Prático 2 da disciplina de Fundamentos de Inteligência Artificial, da Universidade Federal de Minas Gerais (UFMG).
 
-## Algoritmos implementados
+O trabalho consiste na implementação e comparação de algoritmos de otimização aplicados ao problema de sequenciamento de manutenção de ativos de uma concessionária de energia.
 
-- **Greedy Descent (GD)** com reinícios aleatórios, estratégias *Best Improvement* e *First Improvement* e vizinhanças **Swap**, **Insertion** e **2-opt**.
-- **Simulated Annealing (SA)** com calibração da temperatura inicial e resfriamento geométrico ao longo do orçamento de avaliações.
-- **Algoritmo Genético (GA)** com seleção, cruzamento, mutação e elitismo.
+Foram utilizadas três instâncias de diferentes tamanhos, com o objetivo de analisar o desempenho dos algoritmos, a qualidade das soluções encontradas e o custo computacional das buscas.
 
-Na comparação principal, `GD` corresponde a Best Improvement com Insertion. `GD_first` usa First Improvement com Insertion. `GD_swap` e `GD_2opt` utilizam Best Improvement com as respectivas vizinhanças.
+## 1. Algoritmos implementados
 
-## Requisitos e instalação
+### Greedy Descent (GD)
 
-É necessário **Python 3.10 ou superior**. Abra o terminal na pasta do projeto e instale as dependências:
+Implementação de busca local com reinícios aleatórios, considerando:
+
+- Best Improvement;
+- First Improvement;
+- Vizinhança Swap;
+- Vizinhança Insertion;
+- Vizinhança 2-opt.
+
+As diferentes estratégias e vizinhanças foram utilizadas para comparar a qualidade das soluções e o comportamento da busca.
+
+### Simulated Annealing (SA)
+
+Implementação de recozimento simulado com:
+
+- Calibração da temperatura inicial;
+- Resfriamento geométrico;
+- Aceitação probabilística de movimentos de piora;
+- Registro da taxa de aceitação durante a execução;
+- Controle do orçamento de avaliações.
+
+### Algoritmo Genético (GA)
+
+Implementação de algoritmo genético para permutações, utilizando:
+
+- População inicial;
+- Seleção de indivíduos;
+- Cruzamentos Order Crossover (OX) e Partially Mapped Crossover (PMX);
+- Mutação;
+- Elitismo;
+- Acompanhamento da evolução e diversidade populacional.
+
+## 2. Organização do projeto
+
+```text
+TP2-Fund-IA/
+├── inputs/
+│   ├── manutencao_pequena.txt
+│   ├── manutencao_media.txt
+│   └── manutencao_grande.txt
+│
+├── outputs/
+│   ├── completo/
+│   └── benchmark_incremental.csv
+│
+├── algoritmo_genetico.py
+├── greedy_descent.py
+├── simulated_annealing.py
+├── otimizador.py
+├── experimentos.py
+├── benchmark_incremental.py
+├── testes.py
+├── main.py
+├── requirements.txt
+├── .gitignore
+└── README.md
+```
+
+### Descrição dos arquivos
+
+| Arquivo | Descrição |
+|---|---|
+| `otimizador.py` | Leitura das instâncias, função objetivo e avaliação das soluções |
+| `greedy_descent.py` | Busca local, estratégias de melhoria e operadores de vizinhança |
+| `simulated_annealing.py` | Implementação do recozimento simulado |
+| `algoritmo_genetico.py` | Implementação do algoritmo genético e seus operadores |
+| `experimentos.py` | Execução dos experimentos, geração de estatísticas e gráficos |
+| `testes.py` | Testes de funcionamento e consistência |
+| `benchmark_incremental.py` | Comparação entre avaliação completa e incremental |
+| `main.py` | Rotina original de execução, preservada do desenvolvimento inicial |
+| `inputs/` | Instâncias utilizadas nos experimentos |
+| `outputs/` | Resultados, dados estatísticos e gráficos |
+
+**Observação:** o arquivo `experimentos.py` é o responsável pela execução oficial dos experimentos apresentados neste trabalho. O `main.py` foi mantido como parte do desenvolvimento inicial do grupo.
+
+## 3. Requisitos
+
+Para executar o projeto, é necessário ter instalado:
+
+- Python 3.10 ou superior;
+- NumPy;
+- Matplotlib;
+- SciPy.
+
+As bibliotecas utilizadas estão listadas em `requirements.txt`.
+
+## 4. Instalação
+
+Clone o repositório:
+
+```bash
+git clone https://github.com/Thalesed/TP2-Fund-IA.git
+```
+
+Acesse a pasta:
+
+```bash
+cd TP2-Fund-IA
+```
+
+Instale as dependências:
 
 ```bash
 python -m pip install -r requirements.txt
 ```
 
-## Testes e execução
+## 5. Testes automatizados
 
-Para conferir a implementação antes dos experimentos:
+Antes de executar os experimentos, é possível verificar o funcionamento dos principais componentes:
 
 ```bash
 python testes.py
+```
+
+Os testes incluem:
+
+- Conferência da função objetivo;
+- Validação do valor de referência `h = 4366`;
+- Comparação entre avaliação completa e incremental;
+- Verificação dos operadores Swap, Insertion e 2-opt;
+- Validação das permutações produzidas pelos cruzamentos OX e PMX.
+
+Para comparar o desempenho das avaliações:
+
+```bash
 python benchmark_incremental.py
 ```
 
-O primeiro comando verifica o valor de referência `h = 4366` da instância pequena, a equivalência da avaliação incremental e a validade das permutações geradas pelos cruzamentos. O segundo mede os tempos das avaliações completa e incremental para cada vizinhança e instância, salvando `outputs/benchmark_incremental.csv`. As medições não incluem a geração prévia dos vizinhos nem a busca pelo índice inicial do trecho afetado; portanto, não representam necessariamente o tempo total de uma iteração do algoritmo.
+Os resultados são armazenados em `outputs/benchmark_incremental.csv`.
 
-Para conferir rapidamente se o conjunto de experimentos está funcionando:
+Esse benchmark mede o tempo das funções de avaliação, sem incluir todos os custos envolvidos na geração e aplicação dos movimentos.
+
+## 6. Execução dos experimentos
+
+Os experimentos são executados pelo arquivo `experimentos.py`.
+
+### Execução rápida
 
 ```bash
 python experimentos.py --modo rapido
 ```
 
-Para executar o protocolo completo utilizado no trabalho:
+Utilizada para verificar o funcionamento dos algoritmos e a geração dos arquivos, com três repetições por configuração e instância, utilizando orçamentos reduzidos.
+
+Os resultados são armazenados em:
+
+```text
+outputs/rapido/
+```
+
+### Execução completa
 
 ```bash
 python experimentos.py --modo completo
 ```
 
-O modo rápido faz **3 repetições por instância**, com orçamentos reduzidos, apenas para exploração e depuração. O modo completo utiliza:
+Executa o protocolo experimental utilizado no trabalho.
 
-| Instância | Avaliações por execução | Repetições por configuração |
+| Instância | Orçamento de avaliações | Repetições |
 |---|---:|---:|
 | Pequena | 50.000 | 30 |
 | Média | 150.000 | 30 |
 | Grande | 300.000 | 10 |
 
-São **6 configurações × (30 + 30 + 10) = 420 execuções**. O orçamento inclui as avaliações de soluções iniciais e, no SA, as avaliações da calibração de temperatura. Cada execução registra sua semente, permitindo reproduzir os resultados. A calibração do SA busca uma aceitação inicial próxima de 95% para movimentos de piora típicos, mas isso não garante a mesma taxa observada em cada janela.
+Foram consideradas seis configurações:
 
-## Arquivos do projeto
+1. GD — Best Improvement com Insertion;
+2. GD — First Improvement com Insertion;
+3. GD — Best Improvement com Swap;
+4. GD — Best Improvement com 2-opt;
+5. Simulated Annealing;
+6. Algoritmo Genético.
 
-| Arquivo/pasta | Conteúdo |
+No total, foram realizadas **420 execuções experimentais**, com sementes registradas para permitir a reprodução.
+
+O orçamento contabiliza as avaliações das soluções iniciais e, no Simulated Annealing, as avaliações utilizadas na calibração de temperatura.
+
+Os resultados completos são armazenados em:
+
+```text
+outputs/completo/
+```
+
+## 7. Resultados gerados
+
+A execução completa produz os seguintes arquivos:
+
+| Arquivo | Conteúdo |
 |---|---|
-| `otimizador.py` | Leitura das instâncias, função objetivo e operações de avaliação |
-| `greedy_descent.py` | Busca local, estratégias de melhoria e vizinhanças |
-| `simulated_annealing.py` | Recozimento simulado e temperatura |
-| `algoritmo_genetico.py` | Operadores e execução do algoritmo genético |
-| `experimentos.py` | Execução das repetições, estatísticas e geração de gráficos |
-| `testes.py` | Testes básicos e de consistência |
-| `benchmark_incremental.py` | Comparação de tempos de avaliação |
-| `main.py` | Código original de entrada do projeto |
-| `inputs/` | Instâncias pequena, média e grande |
-| `outputs/` | Arquivos produzidos nos experimentos |
+| `execucoes.csv` | Resultados individuais, sementes, tempos e avaliações |
+| `estatisticas.csv` | Estatísticas descritivas dos experimentos |
+| `testes_estatisticos.csv` | Comparações estatísticas entre os algoritmos |
+| `curvas.csv` | Dados das curvas de convergência |
+| `indicadores.csv` | Indicadores do Simulated Annealing e Algoritmo Genético |
 
-Os nomes dos arquivos Python foram mantidos conforme a organização usada pelo grupo.
+Também são gerados 18 gráficos, distribuídos entre as três instâncias:
 
-## Resultados e gráficos
+- Boxplots dos resultados;
+- Curvas de convergência;
+- Comparações entre as vizinhanças do Greedy Descent;
+- Comparações entre Best Improvement e First Improvement;
+- Taxa de aceitação do Simulated Annealing e diversidade do Algoritmo Genético;
+- Evolução da população do Algoritmo Genético.
 
-A execução completa salva os resultados em `outputs/completo/`, e a rápida em `outputs/rapido/`.
+Os testes estatísticos utilizam o método bilateral de Mann–Whitney para comparar GD, SA e GA. Os p-valores registrados não possuem correção para múltiplas comparações.
 
-- `execucoes.csv`: valor final de `h`, semente, tempo e número de avaliações de cada execução.
-- `estatisticas.csv`: média, desvio-padrão, mediana, mínimo e indicadores agregados.
-- `testes_estatisticos.csv`: comparações bilaterais de Mann–Whitney entre GD, SA e GA; os p-valores **não** foram ajustados para comparações múltiplas.
-- `curvas.csv` e `indicadores.csv`: dados das curvas de convergência e dos indicadores do SA e GA.
-- Arquivos `.png`: boxplots, convergência, comparação de vizinhanças e estratégias, aceitação do SA, diversidade e evolução da população do GA.
+## 8. Considerações sobre os experimentos
 
-Os resultados já incluídos em `outputs/completo/` correspondem à versão corrigida dos experimentos. Os testes e comentários adicionados posteriormente não modificam a lógica dos algoritmos. Se forem feitas alterações nos algoritmos ou nos parâmetros, os experimentos afetados devem ser executados novamente.
+A qualidade das soluções é medida pela função objetivo `h`, sendo considerados melhores os menores valores encontrados.
 
-## Observações
+Os experimentos foram realizados nas três instâncias com os orçamentos estabelecidos, permitindo observar diferenças entre os algoritmos e suas configurações.
 
-- Os valores de referência do enunciado não foram utilizados para fabricar dados experimentais.
-- A avaliação incremental é conferida quanto ao valor calculado, mas pode não ser mais rápida em todas as instâncias: isso depende do movimento e do custo adicional da implementação em Python.
-- O arquivo `.gitignore` exclui caches, ambientes virtuais e resultados exploratórios. Mantivemos os resultados oficiais em `outputs/completo/` para consulta do grupo e para o relatório.
+A avaliação incremental foi implementada e comparada à avaliação completa. Embora tenha apresentado resultados equivalentes nos testes de correção, sua eficiência computacional variou conforme a instância e a vizinhança utilizada.
+
+Os algoritmos estocásticos foram executados com diferentes sementes para permitir a análise da variabilidade dos resultados.
+
+Os arquivos disponíveis em `outputs/completo/` correspondem aos experimentos realizados com a versão corrigida do projeto.
+
+Caso sejam alterados os algoritmos, seus parâmetros ou a função objetivo, os experimentos afetados deverão ser executados novamente para atualizar os resultados.
+
+## 9. Relatório
+
+A descrição detalhada da modelagem, das escolhas de implementação, da metodologia experimental e da análise dos resultados será apresentada no relatório acadêmico do TP2.
+
+Os dados e gráficos utilizados nessa análise estão disponíveis na pasta `outputs/completo/`.
