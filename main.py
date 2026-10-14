@@ -1,18 +1,20 @@
-from greedyDescent import GreedyDescent
-from algoritimoGenetico import Genetico
-from simulatedAnnealing import SimulatedAnnealing
+"""Rotinas originais de execução e organização das instâncias."""
+
+from greedy_descent import GreedyDescent
+from algoritmo_genetico import Genetico
+from simulated_annealing import SimulatedAnnealing
 import time
 import os
 import csv
 import statistics
 
-from greedyDescent import (
+from greedy_descent import (
     GreedyDescent,
     SWAP, INSERTION, TWO_OPT,
     BEST_IMPROVEMENT, FIRST_IMPROVEMENT, RANDOM
 )
-from simulatedAnnealing import SimulatedAnnealing
-from algoritimoGenetico import (
+from simulated_annealing import SimulatedAnnealing
+from algoritmo_genetico import (
     Genetico,
     OX, PMX, TORNEIO, ROULETTE
 )
@@ -52,6 +54,7 @@ def matriz_metodos(nome_instancia):
     }
 
 
+# Esta rotina mantém o formato original dos experimentos do grupo.
 def experimento_completo():
     linhas = []
     for nome_inst, (arquivo, orcamento, n_exec) in INSTANCIAS.items():

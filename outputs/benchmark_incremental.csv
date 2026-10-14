@@ -1,0 +1,10 @@
+instancia,vizinhanca,amostras,tempo_completo_s,tempo_incremental_s,razao_incremental_completo
+pequena,swap,2000,0.014073,0.017009,1.2087
+pequena,insertion,2000,0.01388,0.018513,1.3338
+pequena,2opt,2000,0.017634,0.021558,1.2226
+media,swap,2000,0.07396,0.061908,0.837
+media,insertion,2000,0.061864,0.057161,0.924
+media,2opt,2000,0.08028,0.067283,0.8381
+grande,swap,2000,0.12717,0.13241,1.0412
+grande,insertion,2000,0.156434,0.135698,0.8674
+grande,2opt,2000,0.137758,0.226017,1.6407

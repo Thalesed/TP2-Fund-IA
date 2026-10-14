@@ -1,0 +1,33 @@
+# Python e arquivos gerados pelo interpretador
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Ambientes virtuais e configurações locais
+.venv/
+venv/
+env/
+.env
+.env.*
+!.env.example
+
+# IDE e sistema operacional
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Arquivos temporários e logs
+*.log
+*.tmp
+*.bak
+*~
+
+# Simulações exploratórias (os resultados completos são preservados)
+outputs/rapido/
+
+# Não ignorar outputs/completo/ nem outputs/benchmark_incremental.csv

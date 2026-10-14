@@ -1,3 +1,5 @@
+"""Algoritmo genético para trabalhar com diferentes sequências de manutenção."""
+
 import random
 
 from otimizador import Otimizador, OrcamentoEsgotado
@@ -12,6 +14,8 @@ PMX = 'partially_mapped_crossover'
 TORNEIO = 'torneio'
 ROULETTE = 'roleta'
 
+# Cada indivíduo é uma permutação: a ordem dos ativos que serão atendidos.
+# Cada indivíduo é uma permutação: a ordem dos ativos que serão atendidos.
 class Genetico(Otimizador):
     def __init__(self, arquivo, orcamento, N=50, Pc=0.8, Pm=0.1,
                  selecao=TORNEIO, cruzamento=OX, mutacao=SWAP, elitismo=2):
@@ -24,6 +28,7 @@ class Genetico(Otimizador):
         self.mutacao = mutacao
         self.elitismo = elitismo
         self.diversidade = []
+        self.media_populacao = []
 
     def populacao_inicial(self):
         return [self.solucao_aleatoria() for _ in range(self.N)]
@@ -86,7 +91,7 @@ class Genetico(Otimizador):
         if self.cruzamento == OX:
             return self._order_crossover(p1, p2)
         else:
-            return self._partially_maped_crossover(p1, p2)
+            return self._partially_mapped_crossover(p1, p2)
 
     def _mutacao(self, individuo):
         if random.random() > self.Pm:
@@ -110,26 +115,30 @@ class Genetico(Otimizador):
         return distintas
 
     def executar(self):
+        # Os elites são copiados com os custos conhecidos; não precisam ser avaliados outra vez.
+        populacao, custos = [], []
         try:
-            populacao = self.populacao_inicial()
-            custos = [self.h(ind) for ind in populacao]
-            while True:
-                nova_pop = []
-                ordenados = sorted(range(self.N), key=lambda i: custos[i])
-                for i in range(self.elitismo):
-                    nova_pop.append(list(populacao[ordenados[i]]))
-                while len(nova_pop) < self.N:
+            for ind in self.populacao_inicial():
+                populacao.append(ind)
+                custos.append(self.h(ind))
+            self._registrar_geracao(populacao, custos)
+            while self.avaliacoes < self.orcamento:
+                ordenados = sorted(range(len(populacao)), key=lambda i: custos[i])
+                nova_pop = [list(populacao[i]) for i in ordenados[:self.elitismo]]
+                novos_custos = [custos[i] for i in ordenados[:self.elitismo]]
+                while len(nova_pop) < self.N and self.avaliacoes < self.orcamento:
                     p1 = self._selecionar(populacao, custos)
                     p2 = self._selecionar(populacao, custos)
-                    if random.random() < self.Pc:
-                        filho = self._cruzamento(p1, p2)
-                    else:
-                        filho = list(p1)
+                    filho = self._cruzamento(p1, p2) if random.random() < self.Pc else list(p1)
                     filho = self._mutacao(filho)
+                    novos_custos.append(self.h(filho))
                     nova_pop.append(filho)
-                populacao = nova_pop
-                custos = [self.h(ind) for ind in populacao]
-                self.diversidade.append((self.avaliacoes, self._calcular_diversidade(populacao)))
+                populacao, custos = nova_pop, novos_custos
+                self._registrar_geracao(populacao, custos)
         except OrcamentoEsgotado:
             pass
         return self.melhor_solucao, self.melhor_custo
+
+    def _registrar_geracao(self, populacao, custos):
+        self.diversidade.append((self.avaliacoes, self._calcular_diversidade(populacao)/len(populacao)))
+        self.media_populacao.append((self.avaliacoes, sum(custos)/len(custos)))
